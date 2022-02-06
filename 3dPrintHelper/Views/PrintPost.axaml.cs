@@ -25,7 +25,9 @@ namespace _3dPrintHelper.Views
         private Button openFolder;
         private Button openUrl;
         private Button openPrusa;
-
+        private Border borderBackground;
+        private TextBlock description;
+        
         private IPost post;
         private MainView view;
         private PrintPostSmall small;
@@ -56,11 +58,14 @@ namespace _3dPrintHelper.Views
             openFolder = this.FindControl<Button>("OpenFolder");
             openUrl = this.FindControl<Button>("OpenUrl");
             openPrusa = this.FindControl<Button>("OpenPrusa");
+            borderBackground = this.FindControl<Border>("BorderBackground");
+            description = this.FindControl<TextBlock>("Description");
 
             title.Content = post?.Name();
             creator.Content = "By " + post?.Creator().Name();
 
-            topPanel.Background = post?.Api().ApiColour().ToBrush();
+            borderBackground.Background = post?.Api().ApiColour().ToBrush();
+            description.Text = post?.Description();
             Dispatcher.UIThread.Post(LoadImages);
 
             leftArrow.Command = new LambdaCommand(x => Dispatcher.UIThread.Post(Left));
