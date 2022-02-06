@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="1000"
              x:Class="_3dPrintHelper.Views.PrintPost">
-	<Panel>
+	<ScrollViewer>
 		<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Name="TopPanel" Background="Transparent" Spacing="10">
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
 				<StackPanel VerticalAlignment="Center" Margin="10" Spacing="20" Width="700" >
@@ -34,11 +34,11 @@
 					</StackPanel>
 				</Border>
 			</StackPanel>
-			<Border Background="{Binding #BorderBackground.Background}" Padding="10" Width="920" MaxHeight="350" CornerRadius="10" Margin="0,0,0,10">
-				<ScrollViewer MaxHeight="350">
+			<Border Background="{Binding #BorderBackground.Background}" Padding="10" Width="920" CornerRadius="10" Margin="0,0,0,10">
+				<ScrollViewer MaxHeight="175">
 					<TextBlock Text="Hello" TextWrapping="WrapWithOverflow" Name="Description" />
 				</ScrollViewer>
 			</Border>
 		</StackPanel>
-	</Panel>
+	</ScrollViewer>
 </UserControl>

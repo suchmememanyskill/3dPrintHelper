@@ -22,7 +22,14 @@ namespace ApiLinker.Local
         public LocalCreator(LocalApi api) => LocalApi = api;
 
         public string Name() => LocalName;
-        public ISavable Thumbnail() => new LocalImage(Path.Join(LocalApi.basePath, LocalCreatorThumbnailPath));
+        public ISavable Thumbnail()
+        {
+            string path = Path.Join(LocalApi.basePath, LocalCreatorThumbnailPath);
+            if (!File.Exists(path))
+                return null;
+
+            return new LocalImage(path);
+        }
         public Uri Uri() => Url;
 
         public async Task ApplyCreatorAsync(ICreator creator, long id)
@@ -32,7 +39,11 @@ namespace ApiLinker.Local
             LocalCreatorThumbnailPath = Path.Join(id.ToString(), "creator_thumb.jpg");
             Directory.CreateDirectory(Path.Join(LocalApi.basePath, id.ToString()));
             string imgPath = Path.Join(LocalApi.basePath, id.ToString(), "creator_thumb.jpg");
-            await creator.Thumbnail().SaveAsync(imgPath);
+            try
+            {
+                await creator.Thumbnail().SaveAsync(imgPath);
+            }
+            catch (Exception e) { }
         }
     }
 }

@@ -83,6 +83,7 @@ namespace _3dPrintHelper.Views
             if (totalCount < 0)
             {
                 pageNum.Content = $"Page {page}";
+                rightArrow.IsEnabled = true;
             }
             else
             {
