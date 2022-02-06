@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="800"
+             x:Class="_3dPrintHelper.Views.PrintPost">
+	<Panel>
+		<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Name="TopPanel" Background="Blue">
+			<StackPanel VerticalAlignment="Center" Margin="10" Spacing="20" Width="700" >
+				<Border Padding="10" CornerRadius="10" Background="Gray">
+					<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+						<Label Name="Title" FontWeight="Bold" FontSize="20">Title</Label>
+						<Label Name="Creator" FontSize="20">Creator</Label>
+					</StackPanel>
+				</Border>
+				<Panel Height="520">
+					<Image Name="Img" Stretch="UniformToFill" />
+					<Button Name="LeftArrow" Background="{Binding #TopPanel.Background}" Classes="HoverBlack" DockPanel.Dock="Left" FontSize="30" HorizontalAlignment="Left" Margin="5">&lt;</Button>
+					<Button Name="RightArrow" Background="{Binding #TopPanel.Background}" Classes="HoverBlack" DockPanel.Dock="Right" FontSize="30" HorizontalAlignment="Right" Margin="5">&gt;</Button>
+				</Panel>
+			</StackPanel>
+			<Border Background="Gray" CornerRadius="10" Padding="10" Margin="10">
+				<Border.Styles>
+					<Style Selector="Button">
+						<Setter Property="FontSize" Value="15"/>
+					</Style>
+				</Border.Styles>
+				<StackPanel Spacing="5">
+					<Button Background="{Binding #TopPanel.Background}" Name="Back" HorizontalAlignment="Center">Back to main menu</Button>
+					<Button Background="{Binding #TopPanel.Background}" Name="OpenUrl" HorizontalAlignment="Center">Open URL</Button>
+					<Button Background="{Binding #TopPanel.Background}" Name="OpenFolder" HorizontalAlignment="Center">Open folder with files</Button>
+					<Button Background="{Binding #TopPanel.Background}" Name="OpenPrusa" HorizontalAlignment="Center">Open in Prusaslicer</Button>
+				</StackPanel>
+			</Border>
+		</StackPanel>
+	</Panel>
+</UserControl>

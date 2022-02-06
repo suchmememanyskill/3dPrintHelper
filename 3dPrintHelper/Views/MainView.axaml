@@ -1,0 +1,34 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="_3dPrintHelper.Views.MainView">
+	<Panel>
+		<DockPanel>
+			<StackPanel DockPanel.Dock="Top" Name="TopBar" Spacing="10" Orientation="Horizontal" Height="50">
+				<Label FontSize="20" FontWeight="Bold" Content="Loading..." Name="ApiNameLabel" VerticalContentAlignment="Center" Margin="15,0,0,0" />
+				<Label FontSize="16" Content="Loading..." Name="ApiSortType" VerticalContentAlignment="Center" />
+				<Menu VerticalAlignment="Center">
+					<MenuItem Header="Sites" Classes="ButtonLike" Name="SitesMenu" FontSize="16"  />
+				</Menu>
+			</StackPanel>
+			<Panel>
+				<ListBox HorizontalAlignment="Center" Name="List" Background="Transparent">
+					<ListBox.ItemsPanel>
+						<ItemsPanelTemplate>
+							<WrapPanel />
+						</ItemsPanelTemplate>
+					</ListBox.ItemsPanel>
+				</ListBox>
+
+				<Label FontSize="30" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" IsVisible="{Binding !#List.Items.Count}" Name="LoadingLabel" >...</Label>
+			</Panel>
+		</DockPanel>
+		<Panel Name="OverlayPanel" IsVisible="False">
+			<UserControl Name="Overlay" />
+		</Panel>
+		
+	</Panel>
+
+</UserControl>
