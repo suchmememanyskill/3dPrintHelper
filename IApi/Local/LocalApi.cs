@@ -36,9 +36,9 @@ namespace ApiLinker.Local
             switch (sortType)
             {
                 case "Alphabetically":
-                    return root.Posts.OrderBy(x => x.Name()).Select(x => (IPreviewPost)x).ToList();
+                    return root.Posts.OrderBy(x => x.Name()).Select(x => (IPreviewPost)x).Skip(skip).Take(amount).ToList();
                 case "Date Added":
-                    return root.Posts.OrderBy(x => x.Added()).Select(x => (IPreviewPost)x).ToList();
+                    return root.Posts.OrderBy(x => x.Added()).Select(x => (IPreviewPost)x).Skip(skip).Take(amount).ToList();
                 default:
                     throw new NotImplementedException();
             }

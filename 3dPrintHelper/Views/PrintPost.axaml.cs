@@ -104,7 +104,10 @@ namespace _3dPrintHelper.Views
 
         private async void LoadImages()
         {
-            savables = await post?.Images();
+            if (post == null)
+                return;
+
+            savables = await post!.Images();
             await UpdateImageTask();
         }
 

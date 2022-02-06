@@ -29,6 +29,7 @@ namespace ApiLinker.Thingiverse
         public Colour ApiColour() => new(3, 89, 181);
         public string ApiName() => "Thingiverse";
         public List<string> SortTypes() => sortTypes.Keys.ToList();
+        public long GetItemCountOnLastRequest() => lastRequestLen;
 
         public async Task<string> MakeRequest(string url)
         {

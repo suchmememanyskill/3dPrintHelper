@@ -26,6 +26,9 @@ namespace _3dPrintHelper.Views
         private Label loadingLabel;
         private UserControl overlay;
         private Panel overlayPanel;
+        private Button leftArrow;
+        private Button rightArrow;
+        private Label pageNum;
 
         private string currentSortType;
         private int perPage = 40;
@@ -49,6 +52,8 @@ namespace _3dPrintHelper.Views
         public async Task UpdateApiViewTask()
         {
             LastSelected = null;
+            leftArrow.IsEnabled = false;
+            rightArrow.IsEnabled = false;
             list.Items = new List<PrintPostSmall>();
             loadingLabel.Content = "Loading...";
             List<IPreviewPost> posts = await currentApi.GetPosts(currentSortType, perPage, (page - 1) * perPage);
@@ -59,6 +64,20 @@ namespace _3dPrintHelper.Views
             list.Items = tempList;
             if (tempList.Count <= 0)
                 loadingLabel.Content = "No items found";
+
+            long totalCount = currentApi.GetItemCountOnLastRequest();
+            if (totalCount < 0)
+            {
+                pageNum.Content = $"Page {page}";
+            }
+            else
+            {
+                long totalPages = (totalCount + perPage - 1) / perPage;
+                pageNum.Content = $"Page {page}/{totalPages}";
+                rightArrow.IsEnabled = (page < totalPages);
+            }
+
+            leftArrow.IsEnabled = (page > 1);
         }
 
         public async void UpdateApiView() => await UpdateApiViewTask();
@@ -78,6 +97,18 @@ namespace _3dPrintHelper.Views
             Dispatcher.UIThread.Post(UpdateApiView);
         }
 
+        private void OnPageLeft()
+        {
+            page--;
+            Dispatcher.UIThread.Post(UpdateApiView);
+        }
+
+        private void OnPageRight()
+        {
+            page++;
+            Dispatcher.UIThread.Post(UpdateApiView);
+        }
+
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
@@ -90,6 +121,9 @@ namespace _3dPrintHelper.Views
             overlay = this.FindControl<UserControl>("Overlay");
             overlayPanel = this.FindControl<Panel>("OverlayPanel");
             overlayPanel.Background = new SolidColorBrush(new Color(128, 0, 0, 0));
+            leftArrow = this.FindControl<Button>("LeftArrow");
+            rightArrow = this.FindControl<Button>("RightArrow");
+            pageNum = this.FindControl<Label>("PageNum");
 
             list.SelectionChanged += List_SelectionChanged;
 
@@ -113,6 +147,9 @@ namespace _3dPrintHelper.Views
             sitesMenu.Items = menuItems;
 
             Dispatcher.UIThread.Post(UpdateApiView);
+
+            leftArrow.Command = new LambdaCommand(x => OnPageLeft());
+            rightArrow.Command = new LambdaCommand(x => OnPageRight());
         }
 
         private void List_SelectionChanged(object? sender, SelectionChangedEventArgs e)

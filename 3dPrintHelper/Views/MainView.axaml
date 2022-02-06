@@ -12,6 +12,9 @@
 				<Menu VerticalAlignment="Center">
 					<MenuItem Header="Sites" Classes="ButtonLike" Name="SitesMenu" FontSize="16"  />
 				</Menu>
+				<Button Name="LeftArrow" Classes="HoverBlack" FontSize="20" HorizontalAlignment="Left" Margin="5">&lt;</Button>
+				<Label Name="PageNum" FontSize="16" VerticalContentAlignment="Center" />
+				<Button Name="RightArrow" Classes="HoverBlack" FontSize="20" HorizontalAlignment="Right" Margin="5">&gt;</Button>
 			</StackPanel>
 			<Panel>
 				<ListBox HorizontalAlignment="Center" Name="List" Background="Transparent">
