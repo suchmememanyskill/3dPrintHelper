@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="450"
              x:Class="_3dPrintHelper.Views.MainView">
 	<Panel>
 		<DockPanel>
@@ -15,6 +15,8 @@
 				<Button Name="LeftArrow" Classes="HoverBlack" FontSize="20" HorizontalAlignment="Left" Margin="5">&lt;</Button>
 				<Label Name="PageNum" FontSize="16" VerticalContentAlignment="Center" />
 				<Button Name="RightArrow" Classes="HoverBlack" FontSize="20" HorizontalAlignment="Right" Margin="5">&gt;</Button>
+				<TextBox Name="SearchBox" Margin="0,5,0,5" Width="250" Watermark="Search here" />
+				<Button Name="SearchButton" Content="Search now" IsDefault="True" />
 			</StackPanel>
 			<Panel>
 				<ListBox HorizontalAlignment="Center" Name="List" Background="Transparent">

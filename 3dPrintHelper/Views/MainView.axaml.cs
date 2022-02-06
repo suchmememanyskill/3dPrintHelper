@@ -29,9 +29,11 @@ namespace _3dPrintHelper.Views
         private Button leftArrow;
         private Button rightArrow;
         private Label pageNum;
+        private TextBox searchBox;
+        private Button searchButton;
 
         private string currentSortType;
-        private int perPage = 40;
+        private int perPage = 20;
         private int page = 1;
         private IApi currentApi;
         private PrintPostSmall? LastSelected = null;
@@ -49,16 +51,28 @@ namespace _3dPrintHelper.Views
             : this(null) { }
 
 
-        public async Task UpdateApiViewTask()
+        public async Task UpdateApiViewTask(bool search = false)
         {
             LastSelected = null;
             leftArrow.IsEnabled = false;
             rightArrow.IsEnabled = false;
             list.Items = new List<PrintPostSmall>();
             loadingLabel.Content = "Loading...";
-            List<IPreviewPost> posts = await currentApi.GetPosts(currentSortType, perPage, (page - 1) * perPage);
+
+            List<IPreviewPost> posts;
+
+            if (search)
+            {
+                posts = await currentApi.GetPostsBySearch(searchBox.Text, perPage, (page - 1) * perPage);
+                apiSortType.Content = "Search";
+            }
+            else
+            {
+                posts = await currentApi.GetPosts(currentSortType, perPage, (page - 1) * perPage);
+                apiSortType.Content = currentSortType;
+            }
+
             apiNameLabel.Content = currentApi.ApiName();
-            apiSortType.Content = currentSortType;
             topBar.Background = currentApi.ApiColour().ToBrush();
             List<PrintPostSmall> tempList = posts.Select(x => new PrintPostSmall(x, this)).ToList();
             list.Items = tempList;
@@ -80,7 +94,8 @@ namespace _3dPrintHelper.Views
             leftArrow.IsEnabled = (page > 1);
         }
 
-        public async void UpdateApiView() => await UpdateApiViewTask();
+        public async void UpdateApiView() => await UpdateApiViewTask(false);
+        public async void UpdateApiViewSearch() => await UpdateApiViewTask(true);
 
         public void SetOverlay(object? target = null)
         {
@@ -124,6 +139,8 @@ namespace _3dPrintHelper.Views
             leftArrow = this.FindControl<Button>("LeftArrow");
             rightArrow = this.FindControl<Button>("RightArrow");
             pageNum = this.FindControl<Label>("PageNum");
+            searchBox = this.FindControl<TextBox>("SearchBox");
+            searchButton = this.FindControl<Button>("SearchButton");
 
             list.SelectionChanged += List_SelectionChanged;
 
@@ -150,6 +167,7 @@ namespace _3dPrintHelper.Views
 
             leftArrow.Command = new LambdaCommand(x => OnPageLeft());
             rightArrow.Command = new LambdaCommand(x => OnPageRight());
+            searchButton.Command = new LambdaCommand(x => Dispatcher.UIThread.Post(UpdateApiViewSearch));
         }
 
         private void List_SelectionChanged(object? sender, SelectionChangedEventArgs e)

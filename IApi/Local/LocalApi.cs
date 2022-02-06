@@ -38,7 +38,7 @@ namespace ApiLinker.Local
                 case "Alphabetically":
                     return root.Posts.OrderBy(x => x.Name()).Select(x => (IPreviewPost)x).Skip(skip).Take(amount).ToList();
                 case "Date Added":
-                    return root.Posts.OrderBy(x => x.Added()).Select(x => (IPreviewPost)x).Skip(skip).Take(amount).ToList();
+                    return root.Posts.OrderByDescending(x => x.Added()).Select(x => (IPreviewPost)x).Skip(skip).Take(amount).ToList();
                 default:
                     throw new NotImplementedException();
             }
@@ -46,7 +46,8 @@ namespace ApiLinker.Local
 
         public async Task<List<IPreviewPost>> GetPostsBySearch(string search, int amount, int skip)
         {
-            throw new NotImplementedException();
+            string searchLower = search.ToLower();
+            return root.Posts.Where(x => x.Name().ToLower().Contains(searchLower) || x.Description().ToLower().Contains(searchLower)).Select(x => (IPreviewPost)x).Skip(skip).Take(amount).ToList();
         }
 
         public List<string> SortTypes() => new List<string>() { "Alphabetically", "Date Added" };

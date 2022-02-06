@@ -42,7 +42,8 @@ namespace ApiLinker.Thingiverse
 
         public async Task<List<IPreviewPost>> GetPosts(string sortType, int amount, int skip)
         {
-            string response = await MakeRequest($"https://api.thingiverse.com/search/?page={skip / amount + 1}&per_page={amount}&{sortTypes[sortType]}&type=things");
+            string url = $"https://api.thingiverse.com/search/?page={skip / amount + 1}&per_page={amount}&{sortTypes[sortType]}&type=things";
+            string response = await MakeRequest(url);
             RequestThings parsedResponse = JsonConvert.DeserializeObject<RequestThings>(response);
             lastRequestLen = parsedResponse.Total;
             return parsedResponse.Hits.Select(x => (IPreviewPost)new ThingiversePreviewPost(this, x)).ToList();
@@ -51,9 +52,16 @@ namespace ApiLinker.Thingiverse
         public async Task<List<IPreviewPost>> GetPostsBySearch(string search, int amount, int skip)
         {
             string response = await MakeRequest($"https://api.thingiverse.com/search/{search}?page={skip / amount + 1}&per_page={amount}&sort=relevant&type=things");
-            RequestThings parsedResponse = JsonConvert.DeserializeObject<RequestThings>(response);
-            lastRequestLen = parsedResponse.Total;
-            return parsedResponse.Hits.Select(x => (IPreviewPost)new ThingiversePreviewPost(this, x)).ToList();
+            try
+            {
+                RequestThings parsedResponse = JsonConvert.DeserializeObject<RequestThings>(response);
+                lastRequestLen = parsedResponse.Total;
+                return parsedResponse.Hits.Select(x => (IPreviewPost)new ThingiversePreviewPost(this, x)).ToList();
+            }
+            catch (Exception e)
+            {
+                return new();
+            }
         }
     }
 }
