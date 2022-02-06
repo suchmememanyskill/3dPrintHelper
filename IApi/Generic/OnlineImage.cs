@@ -19,6 +19,12 @@ namespace ApiLinker.Generic
             Uri = uri;
         }
 
+        public OnlineImage(Uri uri)
+        {
+            Uri = uri;
+            ImgFilename = Uri.AbsoluteUri.Split("/").Last();
+        }
+
         public virtual byte[] Get() => Request.Get(Uri);
         public virtual async Task<byte[]> GetAsync() => await Request.GetAsync(Uri);
         public string Filename() => ImgFilename;

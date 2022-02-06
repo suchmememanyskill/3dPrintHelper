@@ -1,5 +1,6 @@
 ﻿using ApiLinker.Interfaces;
 using ApiLinker.Local;
+using ApiLinker.MyMiniFactory;
 using ApiLinker.Thingiverse;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace ApiLinker
             APIs = new()
             {
                 new ThingiverseApi(),
+                new MMFApi(),
                 LocalApi.GetInstance(),
             };
         }

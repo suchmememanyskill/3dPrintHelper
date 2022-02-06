@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using System.Linq;
 
 namespace ApiLinker.Generic
 {
@@ -34,6 +33,32 @@ namespace ApiLinker.Generic
 
                 return await client.DownloadDataTaskAsync(uri);
             }  
+        }
+
+        public static string GetString(Uri uri) => GetString(uri, new());
+
+        public static async Task<string> GetStringAsync(Uri uri) => await GetStringAsync(uri, new());
+
+        public static string GetString(Uri uri, Dictionary<string, string> headers)
+        {
+            using (var client = new WebClient())
+            {
+                foreach (var kv in headers)
+                    client.Headers[kv.Key] = kv.Value;
+                return client.DownloadString(uri);
+            }
+
+        }
+
+        public static async Task<string> GetStringAsync(Uri uri, Dictionary<string, string> headers)
+        {
+            using (var client = new WebClient())
+            {
+                foreach (var kv in headers)
+                    client.Headers[kv.Key] = kv.Value;
+
+                return await client.DownloadStringTaskAsync(uri);
+            }
         }
     }
 }

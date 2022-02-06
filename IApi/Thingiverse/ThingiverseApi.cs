@@ -31,14 +31,7 @@ namespace ApiLinker.Thingiverse
         public List<string> SortTypes() => sortTypes.Keys.ToList();
         public long GetItemCountOnLastRequest() => lastRequestLen;
 
-        public async Task<string> MakeRequest(string url)
-        {
-            using (var client = new WebClient())
-            {
-                client.Headers["Authorization"] = apiKey;
-                return await client.DownloadStringTaskAsync(url);
-            }
-        }
+        public async Task<string> MakeRequest(string url) => await Request.GetStringAsync(new Uri(url), new() { { "Authorization", apiKey } });
 
         public async Task<List<IPreviewPost>> GetPosts(string sortType, int amount, int skip)
         {
