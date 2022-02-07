@@ -51,6 +51,7 @@ namespace _3dPrintHelper.Views
             : this(null) { }
 
 
+        private bool lastUpdateTypeSearch = false;
         public async Task UpdateApiViewTask(bool search = false)
         {
             LastSelected = null;
@@ -65,11 +66,13 @@ namespace _3dPrintHelper.Views
             {
                 posts = await currentApi.GetPostsBySearch(searchBox.Text, perPage, (page - 1) * perPage);
                 apiSortType.Content = "Search";
+                lastUpdateTypeSearch = true;
             }
             else
             {
                 posts = await currentApi.GetPosts(currentSortType, perPage, (page - 1) * perPage);
                 apiSortType.Content = currentSortType;
+                lastUpdateTypeSearch = false;
             }
 
             apiNameLabel.Content = currentApi.ApiName();
@@ -97,6 +100,7 @@ namespace _3dPrintHelper.Views
 
         public async void UpdateApiView() => await UpdateApiViewTask(false);
         public async void UpdateApiViewSearch() => await UpdateApiViewTask(true);
+        private async void UpdateApiViewLast() => await UpdateApiViewTask(lastUpdateTypeSearch);
 
         public void SetOverlay(object? target = null)
         {
@@ -116,13 +120,13 @@ namespace _3dPrintHelper.Views
         private void OnPageLeft()
         {
             page--;
-            Dispatcher.UIThread.Post(UpdateApiView);
+            Dispatcher.UIThread.Post(UpdateApiViewLast);
         }
 
         private void OnPageRight()
         {
             page++;
-            Dispatcher.UIThread.Post(UpdateApiView);
+            Dispatcher.UIThread.Post(UpdateApiViewLast);
         }
 
         private void InitializeComponent()
@@ -168,7 +172,11 @@ namespace _3dPrintHelper.Views
 
             leftArrow.Command = new LambdaCommand(x => OnPageLeft());
             rightArrow.Command = new LambdaCommand(x => OnPageRight());
-            searchButton.Command = new LambdaCommand(x => Dispatcher.UIThread.Post(UpdateApiViewSearch));
+            searchButton.Command = new LambdaCommand(x =>
+            {
+                page = 1;
+                Dispatcher.UIThread.Post(UpdateApiViewSearch);
+            });
         }
 
         private void List_SelectionChanged(object? sender, SelectionChangedEventArgs e)
