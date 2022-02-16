@@ -53,6 +53,7 @@ namespace ApiLinker.Thingiverse
             }
             catch (Exception e)
             {
+                lastRequestLen = 0;
                 return new();
             }
         }

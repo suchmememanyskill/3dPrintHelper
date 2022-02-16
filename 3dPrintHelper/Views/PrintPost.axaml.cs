@@ -128,7 +128,9 @@ namespace _3dPrintHelper.Views
 
         private async void Left()
         {
-            img!.Source = null;
+            if (savables == null)
+                return;
+            
             currentIndex = (currentIndex - 1) % savables.Count;
             if (currentIndex < 0)
                 currentIndex = savables.Count - 1;
@@ -137,7 +139,9 @@ namespace _3dPrintHelper.Views
 
         private async void Right()
         {
-            img!.Source = null;
+            if (savables == null)
+                return;
+            
             currentIndex = (currentIndex + 1) % savables.Count;
             await UpdateImageTask();
         }

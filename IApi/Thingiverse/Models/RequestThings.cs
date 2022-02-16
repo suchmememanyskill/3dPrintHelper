@@ -48,7 +48,7 @@ namespace ApiLinker.Thingiverse.Models
         [JsonProperty("make_count")]
         public long MakeCount { get; set; }
 
-        [JsonProperty("like_count")]
+        [JsonProperty("like_count", NullValueHandling = NullValueHandling.Ignore)]
         public long LikeCount { get; set; }
 
         [JsonProperty("tags")]
