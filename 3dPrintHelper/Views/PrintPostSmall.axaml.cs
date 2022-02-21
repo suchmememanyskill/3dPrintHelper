@@ -26,29 +26,17 @@ namespace _3dPrintHelper.Views
         [Binding(nameof(Panel), "Background")] 
         [Binding(nameof(FullView), "Background")]
         [Binding(nameof(QuickAction), "Background")]
-        public SolidColorBrush? Brush
-        {
-            get => post?.Api().ApiColour().ToBrush();
-        }
+        public SolidColorBrush? Brush => post?.Api().ApiColour().ToBrush();
 
         [Binding(nameof(Title), "Content")]
-        public string? PostName
-        {
-            get => post?.Name();
-        }
-        
+        public string? PostName => post?.Name();
+
         [Binding(nameof(FullView), "Content")]
-        public string CurrentFullViewState
-        {
-            get => (FullView.IsEnabled) ? "Info" : "Busy...";
-        }
-        
+        public string CurrentFullViewState => (FullView.IsEnabled) ? "Info" : "Busy...";
+
         [Binding(nameof(QuickAction), "Content")]
-        public string CurrentQuickActionState
-        {
-            get => (QuickAction.IsEnabled) ? post!.QuickActionName() : "Busy...";
-        }
-        
+        public string CurrentQuickActionState => (QuickAction.IsEnabled) ? post!.QuickActionName() : "Busy...";
+
         public PrintPostSmall() => InitializeComponent();
 
         public PrintPostSmall(IPreviewPost post, MainView view)
