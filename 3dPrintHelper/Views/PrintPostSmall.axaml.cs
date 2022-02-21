@@ -6,20 +6,21 @@ using Avalonia.Media;
 using _3dPrintHelper.Service;
 using System.Net;
 using System.IO;
+using _3dPrintHelper.ViewsExt;
 using Avalonia.Threading;
 
 namespace _3dPrintHelper.Views
 {
-    public partial class PrintPostSmall : UserControl
+    public partial class PrintPostSmall : UserControlExt<PrintPostSmall>
     {
         private IPreviewPost? post;
         public MainView MainView { get; }
-        private DockPanel? panel;
-        private Label? title;
-        private Avalonia.Controls.Image? image;
-        private StackPanel buttonRow;
-        private Button quickAction;
-        private Button fullView;
+        [NamedControl] public DockPanel Panel { get; set; }
+        [NamedControl] public Label Title { get; set; }
+        [NamedControl] public Image Background { get; set; }
+        [NamedControl] public StackPanel ButtonRow { get; set; }
+        [NamedControl] public Button QuickAction { get; set; }
+        [NamedControl] public Button FullView { get; set; }
 
         public PrintPostSmall()
         {
@@ -31,6 +32,8 @@ namespace _3dPrintHelper.Views
             this.post = post;
             MainView = view;
             InitializeComponent();
+            SetControls();
+            InitialiseData();
         }
 
         public void Update()
@@ -38,8 +41,8 @@ namespace _3dPrintHelper.Views
             if (post == null)
                 return;
 
-            panel!.Background = post.Api().ApiColour().ToBrush();
-            title!.Content = post.Name();
+            Panel!.Background = post.Api().ApiColour().ToBrush();
+            Title!.Content = post.Name();
         }
 
         public async void DownloadImage()
@@ -49,54 +52,35 @@ namespace _3dPrintHelper.Views
 
             byte[] data = await post.Thumbnail().GetAsync();
             Stream stream = new MemoryStream(data);
-            image!.Source = Avalonia.Media.Imaging.Bitmap.DecodeToWidth(stream, 300);
+            Background!.Source = Avalonia.Media.Imaging.Bitmap.DecodeToWidth(stream, 300);
         }
 
-        public void SetButtonRowVisibility(bool visible) => buttonRow.IsVisible = visible;
+        public void SetButtonRowVisibility(bool visible) => ButtonRow.IsVisible = visible;
 
         public void UpdateQuickAction()
         {
-            quickAction.Content = post!.QuickActionName();
-        }
-
-        public async void OnQuickAction()
-        {
-            quickAction.Content = "Busy...";
-            quickAction.IsEnabled = false;
-            if (await post!.QuickAction() == ApiLinker.Generic.QuickActionUpdateType.ReloadView)
-                await MainView.UpdateApiViewTask();
-            else
-            {
-                UpdateQuickAction();
-                quickAction.IsEnabled = true;
-            }
+            QuickAction.Content = post!.QuickActionName();
         }
 
         public void SetInfoButtonState(bool busy)
         {
-            fullView.IsEnabled = !busy;
+            FullView.IsEnabled = !busy;
 
             if (busy)
-                fullView.Content = "Busy...";
+                FullView.Content = "Busy...";
             else
-                fullView.Content = "Info";
+                FullView.Content = "Info";
         }
 
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
-            panel = this.FindControl<DockPanel>("Panel");
-            title = this.FindControl<Label>("Title");
-            image = this.FindControl<Avalonia.Controls.Image>("Background");
-            quickAction = this.FindControl<Button>("QuickAction");
-            buttonRow = this.FindControl<StackPanel>("ButtonRow");
-            fullView = this.FindControl<Button>("FullView");
+        }
 
-            fullView.Command = new LambdaCommand(x => Dispatcher.UIThread.Post(SwitchView));
-            fullView.Background = post!.Api().ApiColour().ToBrush();
-            quickAction.Command = new LambdaCommand(x => Dispatcher.UIThread.Post(OnQuickAction));
-            quickAction.Background = post!.Api().ApiColour().ToBrush();
-
+        private void InitialiseData()
+        {
+            FullView.Background = post!.Api().ApiColour().ToBrush();
+            QuickAction.Background = post!.Api().ApiColour().ToBrush();
 
             SetButtonRowVisibility(false);
             UpdateQuickAction();
@@ -104,10 +88,25 @@ namespace _3dPrintHelper.Views
             Dispatcher.UIThread.Post(DownloadImage, DispatcherPriority.Background);
         }
 
-        private async void SwitchView()
+        [Command(nameof(FullView))]
+        public async void SwitchView()
         {
             SetInfoButtonState(true);
             MainView.SetOverlay(new PrintPost(await post!.FullPost(), this));
+        }
+        
+        [Command(nameof(QuickAction))]
+        public async void OnQuickAction()
+        {
+            QuickAction.Content = "Busy...";
+            QuickAction.IsEnabled = false;
+            if (await post!.QuickAction() == ApiLinker.Generic.QuickActionUpdateType.ReloadView)
+                await MainView.UpdateApiViewTask();
+            else
+            {
+                UpdateQuickAction();
+                QuickAction.IsEnabled = true;
+            }
         }
     }
 }
