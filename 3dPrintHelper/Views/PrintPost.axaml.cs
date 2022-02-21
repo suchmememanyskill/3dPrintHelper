@@ -150,7 +150,6 @@ namespace _3dPrintHelper.Views
 
         private void Back()
         {
-            small.UpdateQuickAction();
             small.SetInfoButtonState(false);
             view.SetOverlay(null);
         }

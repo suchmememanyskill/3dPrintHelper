@@ -37,10 +37,19 @@ namespace _3dPrintHelper.Views
             get => post?.Name();
         }
         
-        public PrintPostSmall()
+        [Binding(nameof(FullView), "Content")]
+        public string CurrentFullViewState
         {
-            InitializeComponent();
+            get => (FullView.IsEnabled) ? "Info" : "Busy...";
         }
+        
+        [Binding(nameof(QuickAction), "Content")]
+        public string CurrentQuickActionState
+        {
+            get => (QuickAction.IsEnabled) ? post!.QuickActionName() : "Busy...";
+        }
+        
+        public PrintPostSmall() => InitializeComponent();
 
         public PrintPostSmall(IPreviewPost post, MainView view)
         {
@@ -64,19 +73,10 @@ namespace _3dPrintHelper.Views
 
         public void SetButtonRowVisibility(bool visible) => ButtonRow.IsVisible = visible;
 
-        public void UpdateQuickAction()
-        {
-            QuickAction.Content = post!.QuickActionName();
-        }
-
         public void SetInfoButtonState(bool busy)
         {
             FullView.IsEnabled = !busy;
-
-            if (busy)
-                FullView.Content = "Busy...";
-            else
-                FullView.Content = "Info";
+            UpdateView();
         }
 
         private void InitializeComponent()
@@ -87,7 +87,6 @@ namespace _3dPrintHelper.Views
         private void InitialiseData()
         {
             SetButtonRowVisibility(false);
-            UpdateQuickAction();
             Dispatcher.UIThread.Post(DownloadImage, DispatcherPriority.Background);
         }
 
@@ -101,14 +100,14 @@ namespace _3dPrintHelper.Views
         [Command(nameof(QuickAction))]
         public async void OnQuickAction()
         {
-            QuickAction.Content = "Busy...";
             QuickAction.IsEnabled = false;
+            UpdateView();
             if (await post!.QuickAction() == ApiLinker.Generic.QuickActionUpdateType.ReloadView)
                 await MainView.UpdateApiViewTask();
             else
             {
-                UpdateQuickAction();
                 QuickAction.IsEnabled = true;
+                UpdateView();
             }
         }
     }
