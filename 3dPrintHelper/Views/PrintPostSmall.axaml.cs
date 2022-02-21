@@ -7,6 +7,7 @@ using _3dPrintHelper.Service;
 using System.Net;
 using System.IO;
 using _3dPrintHelper.ViewsExt;
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 
 namespace _3dPrintHelper.Views
@@ -21,7 +22,21 @@ namespace _3dPrintHelper.Views
         [NamedControl] public StackPanel ButtonRow { get; set; }
         [NamedControl] public Button QuickAction { get; set; }
         [NamedControl] public Button FullView { get; set; }
+        
+        [Binding(nameof(Panel), "Background")] 
+        [Binding(nameof(FullView), "Background")]
+        [Binding(nameof(QuickAction), "Background")]
+        public SolidColorBrush? Brush
+        {
+            get => post?.Api().ApiColour().ToBrush();
+        }
 
+        [Binding(nameof(Title), "Content")]
+        public string? PostName
+        {
+            get => post?.Name();
+        }
+        
         public PrintPostSmall()
         {
             InitializeComponent();
@@ -34,15 +49,7 @@ namespace _3dPrintHelper.Views
             InitializeComponent();
             SetControls();
             InitialiseData();
-        }
-
-        public void Update()
-        {
-            if (post == null)
-                return;
-
-            Panel!.Background = post.Api().ApiColour().ToBrush();
-            Title!.Content = post.Name();
+            UpdateView();
         }
 
         public async void DownloadImage()
@@ -79,12 +86,8 @@ namespace _3dPrintHelper.Views
 
         private void InitialiseData()
         {
-            FullView.Background = post!.Api().ApiColour().ToBrush();
-            QuickAction.Background = post!.Api().ApiColour().ToBrush();
-
             SetButtonRowVisibility(false);
             UpdateQuickAction();
-            Update();
             Dispatcher.UIThread.Post(DownloadImage, DispatcherPriority.Background);
         }
 

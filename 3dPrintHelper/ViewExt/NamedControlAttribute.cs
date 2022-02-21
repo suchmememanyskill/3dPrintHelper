@@ -1,6 +1,8 @@
-﻿namespace _3dPrintHelper.ViewsExt
+﻿using System;
+
+namespace _3dPrintHelper.ViewsExt
 {
-    public class NamedControlAttribute : System.Attribute
+    public class NamedControlAttribute : Attribute
     {
         public string? Name { get; set; }
 

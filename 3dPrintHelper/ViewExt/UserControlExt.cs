@@ -12,9 +12,13 @@ namespace _3dPrintHelper.ViewsExt
 {
     public abstract class UserControlExt<T> : UserControl
     {
+        private List<BindingAttribute> bindings = new();
+        
         public void SetControls()
         {
+            bindings = new();
             Dictionary<string, Button> foundButtons = new();
+            Dictionary<string, object> foundControls = new();
             
             foreach (var propertyInfo in typeof(T).GetProperties())
             {
@@ -25,13 +29,29 @@ namespace _3dPrintHelper.ViewsExt
                         string? name = attribute.Name;
                         if (name == null)
                             name = propertyInfo.Name;
-
+                        
                         object value = this.FindNameScope().Find(name);
+                        foundControls.Add(name, value);
                         if (value is Button button)
                             foundButtons.Add(name, button);
                         
                         propertyInfo.SetValue(this, value);
                         break;
+                    }
+                    
+                    if (customAttribute is BindingAttribute bindingAttribute)
+                    {
+                        if (!foundControls.ContainsKey(bindingAttribute.ControlName))
+                        {
+                            object value = this.FindNameScope().Find(bindingAttribute.ControlName);
+                            foundControls.Add(bindingAttribute.ControlName, value);
+                        }
+
+                        bindingAttribute.Control = foundControls[bindingAttribute.ControlName];
+                        bindingAttribute.ControlField = bindingAttribute.Control.GetType().GetProperty(bindingAttribute.FieldName)!;
+                        bindingAttribute.Instance = this;
+                        bindingAttribute.AttachedField = propertyInfo;
+                        bindings.Add(bindingAttribute);
                     }
                 }
             }
@@ -63,5 +83,7 @@ namespace _3dPrintHelper.ViewsExt
                 }
             }
         }
+
+        public void UpdateView() => bindings.ForEach(x => x.Set());
     }
 }
