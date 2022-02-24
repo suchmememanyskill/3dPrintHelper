@@ -26,7 +26,18 @@ namespace ApiLinker.Generic
         }
 
         public virtual byte[] Get() => Request.Get(Uri);
-        public virtual async Task<byte[]> GetAsync() => await Request.GetAsync(Uri);
+
+        public virtual async Task<byte[]> GetAsync()
+        {
+            try
+            {
+                return await Request.GetAsync(Uri);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
         public string Filename() => ImgFilename;
     }
 }

@@ -55,8 +55,11 @@ namespace _3dPrintHelper.Views
                 return;
 
             byte[] data = await post.Thumbnail().GetAsync();
-            Stream stream = new MemoryStream(data);
-            Background!.Source = Avalonia.Media.Imaging.Bitmap.DecodeToWidth(stream, 300);
+            if (data != null)
+            {
+                Stream stream = new MemoryStream(data);
+                Background!.Source = Bitmap.DecodeToWidth(stream, 300);
+            }
         }
 
         public void SetButtonRowVisibility(bool visible) => ButtonRow.IsVisible = visible;
