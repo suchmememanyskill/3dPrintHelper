@@ -17,6 +17,7 @@
 				<Button Name="RightArrow" Classes="HoverBlack" FontSize="20" HorizontalAlignment="Right" Margin="5">&gt;</Button>
 				<TextBox Name="SearchBox" Margin="0,5,0,5" Width="250" Watermark="Search here" />
 				<Button Name="SearchButton" Content="Search now" IsDefault="True" />
+				<ComboBox Name="PerPageSelection" VerticalAlignment="Center" />
 			</StackPanel>
 			<Panel>
 				<ListBox HorizontalAlignment="Center" Name="List" Background="Transparent">

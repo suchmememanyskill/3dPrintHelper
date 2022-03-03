@@ -10,11 +10,12 @@ using _3dPrintHelper.Service;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System;
+using _3dPrintHelper.ViewsExt;
 using Avalonia.Media;
 
 namespace _3dPrintHelper.Views
 {
-    public partial class MainView : UserControl
+    public partial class MainView : UserControlExt<MainView>
     {
         public MainWindow Window { get; }
         private ListBox list;
@@ -31,6 +32,15 @@ namespace _3dPrintHelper.Views
         private Label pageNum;
         private TextBox searchBox;
         private Button searchButton;
+        
+        [NamedControl]
+        public ComboBox PerPageSelection { get; set; }
+
+        [Binding(nameof(PerPageSelection), "Items")]
+        public List<string> PageSelectionItems => new() {"10", "20", "30", "40", "50"};
+
+        [Binding(nameof(PerPageSelection), "SelectedIndex")]
+        public int PageSelectionItemsIndex => (perPage - 10) / 10;
 
         private string currentSortType;
         private int perPage = 20;
@@ -45,6 +55,9 @@ namespace _3dPrintHelper.Views
             currentSortType = currentApi.SortTypes()[0];
             this.Window = window;
             InitializeComponent();
+            SetControls();
+            InitialiseData();
+            UpdateView();
         }
 
         public MainView()
@@ -179,6 +192,16 @@ namespace _3dPrintHelper.Views
             });
         }
 
+        private void InitialiseData()
+        {
+            PerPageSelection.SelectionChanged += (sender, args) =>
+            {
+                perPage = (PerPageSelection.SelectedIndex + 1) * 10;
+                page = 1;
+                Dispatcher.UIThread.Post(UpdateApiView);
+            };
+        }
+        
         private void List_SelectionChanged(object? sender, SelectionChangedEventArgs e)
         {
             LastSelected?.SetButtonRowVisibility(false);

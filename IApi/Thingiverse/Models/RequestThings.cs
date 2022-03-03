@@ -18,7 +18,7 @@ namespace ApiLinker.Thingiverse.Models
 
     public partial class Hit
     {
-        [JsonProperty("id")]
+        [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
         public long Id { get; private set; }
 
         [JsonProperty("name")]
@@ -45,7 +45,7 @@ namespace ApiLinker.Thingiverse.Models
         [JsonProperty("comment_count", NullValueHandling = NullValueHandling.Ignore)]
         public long CommentCount { get; set; }
 
-        [JsonProperty("make_count")]
+        [JsonProperty("make_count", NullValueHandling = NullValueHandling.Ignore)]
         public long MakeCount { get; set; }
 
         [JsonProperty("like_count", NullValueHandling = NullValueHandling.Ignore)]
@@ -54,7 +54,7 @@ namespace ApiLinker.Thingiverse.Models
         [JsonProperty("tags")]
         public List<Tag> Tags { get; set; }
 
-        [JsonProperty("is_nsfw")]
+        [JsonProperty("is_nsfw", NullValueHandling = NullValueHandling.Ignore)]
         public bool IsNsfw { get; set; }
     }
 }
