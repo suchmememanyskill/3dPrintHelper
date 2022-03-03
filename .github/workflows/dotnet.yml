@@ -43,3 +43,4 @@ jobs:
         asset_path: ./Windows.7z # path to archive to upload
         asset_name: windows-nightly-$$.7z # name to upload the release as, use $$ to insert date (YYYYMMDD) and 6 letter commit hash
         asset_content_type: application/7z # required by GitHub API
+        max_releases: 1 # optional, if there are more releases than this matching the asset_name, the oldest ones are going to be deleted
