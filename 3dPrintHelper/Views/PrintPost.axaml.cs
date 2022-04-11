@@ -1,3 +1,4 @@
+using System;
 using _3dPrintHelper.Service;
 using ApiLinker.Interfaces;
 using ApiLinker.Local;
@@ -10,6 +11,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace _3dPrintHelper.Views
 {
@@ -103,7 +105,20 @@ namespace _3dPrintHelper.Views
             LocalPost localPost = await GetLocalPost();
             List<IDownload> files = (await localPost.Downloads()).Where(x => x.IsModel()).ToList();
             List<string> paths = files.Select(x => Path.Join(localPost.FilePath(), x.Filename())).ToList();
-            Process.Start("C:/Program Files/Prusa3D/PrusaSlicer/prusa-slicer.exe", string.Join(" ", paths));
+            try
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    Process.Start("C:/Program Files/Prusa3D/PrusaSlicer/prusa-slicer.exe", string.Join(" ", paths));
+                else
+                    Process.Start("/usr/bin/flatpak",
+                        $"run --branch=stable --arch=x86_64 --command=entrypoint --file-forwarding com.prusa3d.PrusaSlicer @@ {string.Join(" ", paths)} @@");
+            }
+            catch (Exception e)
+            {
+                await Utils.CreateMessageBox("Unable to open PrusaSlicer",
+                    "Is PrusaSlicer installed?\nOn windows it should be installed in the default location\nOn linux it should be installed as a flatpak").Show();
+            }
+
             SetAllButtonsEnabled(true);
         }
 

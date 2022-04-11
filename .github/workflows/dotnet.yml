@@ -27,11 +27,22 @@ jobs:
       run: |
         cd 3dPrintHelper
         dotnet publish -o Windows -r win-x64 -p:PublishSingleFile=true
+
+    - name: Linux build
+      run: |
+        cd 3dPrintHelper
+        dotnet publish -o Linux -r linux-x64 -p:PublishSingleFile=true
+        chmod a+x Linux/3dPrintHelper
         
     - name: Zip Windows Build
       uses: edgarrc/action-7z@v1
       with:
         args: 7z a Windows.7z ./3dPrintHelper/Windows
+
+    - name: Zip Linux Build
+      uses: edgarrc/action-7z@v1
+      with:
+        args: 7z a Linux.7z ./3dPrintHelper/Linux
 
     - name: Deploy Windows release
       uses: WebFreak001/deploy-nightly@v1.1.0
@@ -42,5 +53,17 @@ jobs:
         release_id: 60945024 # same as above (id can just be taken out the upload_url, it's used to find old releases)
         asset_path: ./Windows.7z # path to archive to upload
         asset_name: windows-nightly-$$.7z # name to upload the release as, use $$ to insert date (YYYYMMDD) and 6 letter commit hash
+        asset_content_type: application/7z # required by GitHub API
+        max_releases: 1 # optional, if there are more releases than this matching the asset_name, the oldest ones are going to be deleted
+
+    - name: Deploy Linux release
+      uses: WebFreak001/deploy-nightly@v1.1.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # automatically provided by github actions
+      with:
+        upload_url: https://uploads.github.com/repos/suchmememanyskill/3dPrintHelper/releases/60945024/assets{?name,label} # find out this value by opening https://api.github.com/repos/<owner>/<repo>/releases in your browser and copy the full "upload_url" value including the {?name,label} part
+        release_id: 60945024 # same as above (id can just be taken out the upload_url, it's used to find old releases)
+        asset_path: ./Linux.7z # path to archive to upload
+        asset_name: linux-nightly-$$.7z # name to upload the release as, use $$ to insert date (YYYYMMDD) and 6 letter commit hash
         asset_content_type: application/7z # required by GitHub API
         max_releases: 1 # optional, if there are more releases than this matching the asset_name, the oldest ones are going to be deleted
