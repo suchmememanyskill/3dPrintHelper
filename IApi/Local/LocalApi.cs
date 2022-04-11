@@ -56,7 +56,12 @@ namespace ApiLinker.Local
         {
             Load(); // Make sure our data is up to date before writing to it
             LocalPost logicalPost = new(this);
-            await logicalPost.ApplyPost(post, await post.FullPost());
+            IPost iPost = await post.FullPost();
+
+            if (iPost == null)
+                return;
+            
+            await logicalPost.ApplyPost(post, iPost);
             root.Posts.Add(logicalPost);
             Save();
         }

@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,9 +30,16 @@ namespace ApiLinker.MyMiniFactory
         public async Task<IPost> FullPost()
         {
             string url = $"https://www.myminifactory.com/api/v2/objects/{hit.Id}?key={MMFApi.apiKey}";
-            string response = await Request.GetStringAsync(new Uri(url));
-            FetchSpecificObject result = JsonConvert.DeserializeObject<FetchSpecificObject>(response);
-            return new MMFPost(result, api, this);
+            try
+            {
+                string response = await Request.GetStringAsync(new Uri(url));
+                FetchSpecificObject result = JsonConvert.DeserializeObject<FetchSpecificObject>(response);
+                return new MMFPost(result, api, this);
+            }
+            catch (WebException e)
+            {
+                return null;
+            }
         }
     }
 }

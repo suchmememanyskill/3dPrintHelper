@@ -85,7 +85,9 @@ namespace _3dPrintHelper.Views
         public async void SwitchView()
         {
             SetInfoButtonState(true);
-            MainView.SetOverlay(new PrintPost(await post!.FullPost(), this));
+            IPost iPost = await post!.FullPost();
+            if (iPost != null)
+                MainView.SetOverlay(new PrintPost(iPost, this));
         }
         
         [Command(nameof(QuickAction))]
