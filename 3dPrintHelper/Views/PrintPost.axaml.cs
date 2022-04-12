@@ -107,11 +107,13 @@ namespace _3dPrintHelper.Views
             List<string> paths = files.Select(x => Path.Join(localPost.FilePath(), x.Filename())).ToList();
             try
             {
+                string stringPaths = string.Join(" ", paths.Select(x => x.Contains(" ") ? $"\"{x}\"" : x));
+                
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                    Process.Start("C:/Program Files/Prusa3D/PrusaSlicer/prusa-slicer.exe", string.Join(" ", paths));
+                    Process.Start("C:/Program Files/Prusa3D/PrusaSlicer/prusa-slicer.exe", stringPaths);
                 else
                     Process.Start("/usr/bin/flatpak",
-                        $"run --branch=stable --arch=x86_64 --command=entrypoint --file-forwarding com.prusa3d.PrusaSlicer @@ {string.Join(" ", paths)} @@");
+                        $"run --branch=stable --arch=x86_64 --command=entrypoint --file-forwarding com.prusa3d.PrusaSlicer @@ {stringPaths} @@");
             }
             catch (Exception e)
             {

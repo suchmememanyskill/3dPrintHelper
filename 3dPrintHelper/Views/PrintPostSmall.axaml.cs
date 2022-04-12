@@ -54,7 +54,12 @@ namespace _3dPrintHelper.Views
             if (post == null)
                 return;
 
-            byte[] data = await post.Thumbnail().GetAsync();
+            ISavable savable = post.Thumbnail();
+
+            if (savable == null)
+                return;
+
+            byte[] data = await savable.GetAsync();
             if (data != null)
             {
                 Stream stream = new MemoryStream(data);

@@ -30,7 +30,7 @@ namespace ApiLinker.Generic
             {
                 foreach (var kv in headers)
                     client.Headers[kv.Key] = kv.Value;
-
+                
                 return await client.DownloadDataTaskAsync(uri);
             }  
         }
@@ -58,6 +58,15 @@ namespace ApiLinker.Generic
                     client.Headers[kv.Key] = kv.Value;
 
                 return await client.DownloadStringTaskAsync(uri);
+            }
+        }
+
+        public static async Task<string> PostStringAsync(Uri uri, string data)
+        {
+            using (var client = new WebClient())
+            {
+                client.Headers["Content-Type"] = "application/json";
+                return await client.UploadStringTaskAsync(uri, data);
             }
         }
     }
