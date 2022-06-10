@@ -1,3 +1,4 @@
+using System;
 using ApiLinker.Interfaces;
 using Avalonia;
 using Avalonia.Controls;
@@ -59,12 +60,20 @@ namespace _3dPrintHelper.Views
             if (savable == null)
                 return;
 
-            byte[] data = await savable.GetAsync();
-            if (data != null)
+            try
             {
-                Stream stream = new MemoryStream(data);
-                Background!.Source = Bitmap.DecodeToWidth(stream, 300);
+                byte[] data = await savable.GetAsync();
+                if (data != null)
+                {
+                    Stream stream = new MemoryStream(data);
+                    Background!.Source = Bitmap.DecodeToWidth(stream, 300);
+                }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine($"[Exception] {e}");
+            }
+
         }
 
         public void SetButtonRowVisibility(bool visible) => ButtonRow.IsVisible = visible;
