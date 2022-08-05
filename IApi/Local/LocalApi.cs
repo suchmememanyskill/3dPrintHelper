@@ -97,6 +97,13 @@ namespace ApiLinker.Local
             {
                 root = JsonConvert.DeserializeObject<LocalRoot>(File.ReadAllText(path));
                 root.Posts.ForEach(x => { x.LocalApi = this; x.LocalCreator.LocalApi = this; });
+                
+                root.Posts.ForEach(x =>
+                {
+                    path = Path.Join(basePath, x.Id.ToString(), "post.json");
+                    if (!File.Exists(path))
+                        File.WriteAllText(path, JsonConvert.SerializeObject(x));
+                });
             }
             else
                 root = new();
